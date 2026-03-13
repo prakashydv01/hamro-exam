@@ -475,15 +475,7 @@ export default function EntranceFaqSection() {
         )}
 
         {/* Simple CTA */}
-        <div className="mt-12 text-center">
-          <a
-            href="/practice"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition shadow-md"
-          >
-            <span>📝</span>
-            Start Practice Test
-          </a>
-        </div>
+        
 
         {/* SEO Structured Data */}
         <script
