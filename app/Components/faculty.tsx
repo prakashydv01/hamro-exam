@@ -201,7 +201,7 @@ export default function DashboardPage() {
       code: 'BIT',
       icon: <GraduationCap />,
       questions: 1250,
-      mockTests: 15,
+      mockTests: "unlimited",
       iconBgColor: '#eff6ff',
       iconColor: '#2563eb'
     },
@@ -210,7 +210,7 @@ export default function DashboardPage() {
       code: 'CSIT',
       icon: <Cpu />,
       questions: 1450,
-      mockTests: 18,
+      mockTests: "unlimited",
       iconBgColor: '#f5f3ff',
       iconColor: '#7c3aed'
     },
@@ -219,37 +219,21 @@ export default function DashboardPage() {
       code: 'IOE',
       icon: <Microscope />,
       questions: 1100,
-      mockTests: 12,
+      mockTests: "unlimited",
       iconBgColor: '#ecfdf5',
       iconColor: '#059669'
     },
-    {
-      name: 'BIM',
-      code: 'BIM',
-      icon: <BarChart3 />,
-      questions: 980,
-      mockTests: 10,
-      iconBgColor: '#fff7ed',
-      iconColor: '#ea580c'
-    },
+    
     {
       name: 'BCA',
       code: 'BCA',
       icon: <Globe />,
       questions: 890,
-      mockTests: 8,
+      mockTests: "unlimited",
       iconBgColor: '#fef2f2',
       iconColor: '#dc2626'
     },
-    {
-      name: 'BBA',
-      code: 'BBA',
-      icon: <Shield />,
-      questions: 820,
-      mockTests: 7,
-      iconBgColor: '#eef2ff',
-      iconColor: '#4f46e5'
-    }
+    
   ];
 
   return (
@@ -328,12 +312,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Note */}
-        <div style={{ marginTop: '32px', textAlign: 'center' }}>
-          <p style={{
-            fontSize: '14px',
-            color: '#9ca3af'
-          }}>More faculties will be added soon</p>
-        </div>
+        
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import {
   X,
   Settings,
   ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 
 const menu = [
@@ -77,28 +78,48 @@ export default function DashboardSidebar({ userName: propUserName, userEmail: pr
 
   return (
     <>
-      {/* Mobile Menu Button - Positioned under header */}
-      {isMobile && (
+      {/* Minimal Arrow Button to Open Sidebar */}
+      {isMobile && !open && (
         <button
-          onClick={() => setOpen(!open)}
-          className="fixed z-40 left-4 bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-3 rounded-xl shadow-lg lg:hidden"
-          style={{ top: '4.5rem' }} // Positioned below header (16px header + 12px margin)
-          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen(true)}
+          className="fixed left-0 top-1/2 -translate-y-1/2 z-40 lg:hidden group"
+          aria-label="Open sidebar"
         >
-          {open ? <X size={20} /> : <Menu size={20} />}
+          <div className="relative">
+            {/* Arrow button */}
+            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-2 rounded-r-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:pl-3">
+              <ChevronRight size={24} className="animate-pulse" />
+            </div>
+            
+            {/* Small hint text */}
+            <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 bg-gray-900 text-white text-xs px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+              Open menu
+            </span>
+          </div>
         </button>
       )}
 
-      {/* Mobile Overlay - Fixed position, starts below header */}
+      {/* Close button when sidebar is open */}
+      {isMobile && open && (
+        <button
+          onClick={() => setOpen(false)}
+          className="fixed left-64 top-1/2 -translate-y-1/2 z-50 lg:hidden bg-white border border-gray-200 text-gray-600 p-2 rounded-r-xl shadow-lg hover:bg-gray-50 transition-all duration-300"
+          aria-label="Close sidebar"
+        >
+          <ChevronLeft size={20} />
+        </button>
+      )}
+
+      {/* Mobile Overlay */}
       {isMobile && open && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 lg:hidden"
-          style={{ top: '4rem' }} // Start below the fixed header
+          style={{ top: '4rem' }}
           onClick={() => setOpen(false)}
         />
       )}
 
-      {/* Sidebar - Fixed position, starts below header on mobile */}
+      {/* Sidebar */}
       <aside
         className={`
           bg-gradient-to-b from-white to-gray-50/50
@@ -137,7 +158,6 @@ export default function DashboardSidebar({ userName: propUserName, userEmail: pr
 
               return (
                 <Link
-                
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}

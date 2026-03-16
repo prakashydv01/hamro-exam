@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const MockTestAttemptSchema = new Schema(
   {
     userId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.Mixed,
       ref: "User",
       required: true,
     },

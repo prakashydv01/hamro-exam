@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 
 import MockTestConfig from "@/models/MockTestConfig";
@@ -25,16 +23,15 @@ export async function GET() {
 /* ================= POST: START MOCK TEST ================= */
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { faculty, selectedGroups } = await req.json();
+    // Session check removed - now public
+    const { faculty, selectedGroups, userId: clientUserId } = await req.json();
 
     if (!faculty) {
       return NextResponse.json({ error: "Faculty required" }, { status: 400 });
     }
+
+    // Generate a guest user ID if not provided
+    const userId = clientUserId || `guest_${crypto.randomUUID()}`;
 
     await connectDB();
 
@@ -101,7 +98,7 @@ export async function POST(req: Request) {
     };
 
     const attempt = await MockTestAttempt.create({
-      userId: session.user.id,
+      userId: userId,
       faculty,
       negativeMarking: negativeMarkingConfig,
       questions: questions.map((q) => ({
@@ -123,9 +120,10 @@ export async function POST(req: Request) {
         question: q.question,
         options: q.options,
         correctAnswer: Number(q.correctAnswer), // 👈 CRITICAL: Send correctAnswer!
-    subject: q.subject, // 👈 Also send subject for subject-wise analysis
+        subject: q.subject, // 👈 Also send subject for subject-wise analysis
       })),
       negativeMarking: negativeMarkingConfig,
+      userId: userId, // Return userId to client for subsequent requests
     });
   } catch (error) {
     console.error("Error starting mock test:", error);
@@ -139,12 +137,8 @@ export async function POST(req: Request) {
 /* ================= PUT: SAVE ANSWERS ================= */
 export async function PUT(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { attemptId, answers } = await req.json();
+    // Session check removed - now requires userId from request body
+    const { attemptId, answers, userId } = await req.json();
 
     if (!attemptId || !answers) {
       return NextResponse.json(
@@ -153,11 +147,18 @@ export async function PUT(req: Request) {
       );
     }
 
+    if (!userId) {
+      return NextResponse.json(
+        { error: "User ID is required to save answers" },
+        { status: 400 }
+      );
+    }
+
     await connectDB();
 
     const attempt = await MockTestAttempt.findOne({
       _id: attemptId,
-      userId: session.user.id,
+      userId: userId,
     });
 
     if (!attempt) {
@@ -186,12 +187,8 @@ export async function PUT(req: Request) {
 /* ================= PATCH: COMPLETE TEST ================= */
 export async function PATCH(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { attemptId } = await req.json();
+    // Session check removed - now requires userId from request body
+    const { attemptId, userId } = await req.json();
 
     if (!attemptId) {
       return NextResponse.json(
@@ -200,11 +197,18 @@ export async function PATCH(req: Request) {
       );
     }
 
+    if (!userId) {
+      return NextResponse.json(
+        { error: "User ID is required to complete test" },
+        { status: 400 }
+      );
+    }
+
     await connectDB();
 
     const attempt = await MockTestAttempt.findOne({
       _id: attemptId,
-      userId: session.user.id,
+      userId: userId,
     });
 
     if (!attempt) {
@@ -252,13 +256,10 @@ export async function PATCH(req: Request) {
 /* ================= GET: TEST RESULTS ================= */
 export async function GET_RESULTS(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+    // Session check removed - now requires userId from query params
     const { searchParams } = new URL(req.url);
     const attemptId = searchParams.get("attemptId");
+    const userId = searchParams.get("userId");
 
     if (!attemptId) {
       return NextResponse.json(
@@ -267,11 +268,18 @@ export async function GET_RESULTS(req: Request) {
       );
     }
 
+    if (!userId) {
+      return NextResponse.json(
+        { error: "User ID is required to fetch results" },
+        { status: 400 }
+      );
+    }
+
     await connectDB();
 
     const attempt = await MockTestAttempt.findOne({
       _id: attemptId,
-      userId: session.user.id,
+      userId: userId,
     }).populate("questions.questionId", "question options correctAnswer");
 
     if (!attempt) {

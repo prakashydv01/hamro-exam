@@ -68,9 +68,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {[
                 { href: '/', label: 'Home', icon: <FaHome className="inline mr-2" /> },
-                { href: '/exams', label: 'All Exams', icon: <FaBookOpen className="inline mr-2" /> },
-                { href: '/mock-tests', label: 'Mock Tests', icon: <FaChartLine className="inline mr-2" /> },
-                { href: '/results', label: 'Results', icon: <FaUserGraduate className="inline mr-2" /> },
+                
                 { href: '/about', label: 'About Us' },
                 { href: '/contact', label: 'Contact Us' },
               ].map((link) => (
@@ -89,29 +87,30 @@ const Footer = () => {
 
           {/* Popular Exams */}
           <div>
-            <h3 className="text-xl font-semibold mb-6 border-l-4 border-green-500 pl-3">
+            <h3 className="text-xl font-semibold mb-6 border-l-4 border-blue-500 pl-3">
               Popular Exams
             </h3>
             <ul className="space-y-3">
               {[
-                'SEE Preparation',
-                'Medical Entrance',
-                'Engineering Entrance',
-                'Lok Sewa Aayog',
-                'Banking Exams',
-                'Scholarship Exams',
-              ].map((exam) => (
-                <li key={exam}>
+               
+                { href: '/dashboard/mocktest', label: 'Mock Tests', icon: <FaBookOpen className="inline mr-2" /> },
+                
+                { href: '/dashboard/practice', label: 'Practice', icon: <FaUserGraduate className="inline mr-2" /> },
+                
+              ].map((link) => (
+                <li key={link.href}>
                   <Link 
-                    href={`/exams/${exam.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="text-gray-300 hover:text-green-400 transition-colors block hover:translate-x-2 duration-300"
+                    href={link.href}
+                    className="text-gray-300 hover:text-blue-400 transition-colors flex items-center hover:translate-x-2 duration-300"
                   >
-                    {exam}
+                    {link.icon || <span className="inline-block w-4 mr-2" />}
+                    {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
+
 
           {/* Contact Info */}
           <div>
@@ -128,14 +127,14 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <FaPhone className="text-blue-400" />
-                <a href="tel:+977-1-2345678" className="text-gray-300 hover:text-blue-400">
-                  +977-1-2345678
+                <a href="tel:+977-9809612558" className="text-gray-300 hover:text-blue-400">
+                  +977-9809612558
                 </a>
               </div>
               <div className="flex items-center space-x-3">
                 <FaEnvelope className="text-red-400" />
-                <a href="mailto:info@hamroexam.com" className="text-gray-300 hover:text-red-400">
-                  info@hamroexam.com
+                <a href="mailto:hamroexam1@gmail.com" className="text-gray-300 hover:text-red-400">
+                  hamroexam1@gmail.com
                 </a>
               </div>
             </div>
@@ -164,15 +163,15 @@ const Footer = () => {
             <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
               Terms of Service
             </Link>
-            <Link href="/sitemap" className="text-gray-400 hover:text-white transition-colors">
-              Sitemap
+            
+            <Link href="/disclaimer" className="text-gray-400 hover:text-white transition-colors">
+              Disclaimer
             </Link>
+            
           </div>
 
           <div className="flex items-center space-x-2 mt-4 md:mt-0 text-gray-400 text-sm">
-            <span>Powered by</span>
-            <SiNextdotjs className="text-white" />
-            <span>Next.js</span>
+            
           </div>
         </div>
       </div>

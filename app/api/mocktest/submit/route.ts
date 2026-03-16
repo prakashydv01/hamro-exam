@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import MockTestAttempt from "@/models/Attempt";
+import mongoose from "mongoose";
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+  // Session check removed - now public
   const { attemptId, answers } = await req.json();
 
   if (!attemptId) {
@@ -49,10 +43,8 @@ export async function POST(req: Request) {
   }
 
   /* ================= FIND ATTEMPT ================= */
-  const attempt = await MockTestAttempt.findOne({
-    _id: attemptId,
-    userId: session.user.id,
-  }).lean();
+  // Find attempt by ID only (no userId check for public access)
+  const attempt = await MockTestAttempt.findById(attemptId).lean();
 
   if (!attempt) {
     return NextResponse.json({ error: "Attempt not found" }, { status: 404 });

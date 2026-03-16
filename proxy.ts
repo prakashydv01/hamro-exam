@@ -17,7 +17,7 @@ export async function proxy(req: NextRequest) {
     }
 
     if (token.role !== "admin") {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      return NextResponse.redirect(new URL("/admin", req.url));
     }
   }
 

@@ -81,8 +81,8 @@ export default function Header() {
   /* ================= NAV ITEMS ================= */
   const navItems = [
     { href: "/", label: "Home", icon: <Home size={18} /> },
-    { href: "/dashboard", label: "Mock Test", icon: <BookOpen size={18} /> },
-    { href: "/dashboard", label: "Practice", icon: <Book size={18} /> },
+    { href: "/dashboard/mocktest", label: "Mock Test", icon: <BookOpen size={18} /> },
+    { href: "/dashboard/practice", label: "Practice", icon: <Book size={18} /> },
     
   ];
 
@@ -135,7 +135,7 @@ export default function Header() {
           <Link href="/" className="flex items-center space-x-2 group">
             <div className="w-9 h-9 relative overflow-hidden rounded-lg">
               <Image
-                src="/image/Hamro-Exam.png"
+                src="/image/Hamro-Exams.svg"
                 alt="HamroExam Logo"
                 width={36}
                 height={36}
@@ -169,11 +169,11 @@ export default function Header() {
           </nav>
 
           {/* ================= RIGHT SIDE ================= */}
-          <div className="flex items-center">
+          <div className="flex items-center ">
             {/* ================= MOBILE MENU BTN ================= */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-1.5 rounded-md hover:bg-gray-100 transition-colors"
+              className="lg:hidden p-1.5 rounded-md hover:bg-gray-900 transition-colors"
               aria-label="Toggle menu"
             >
               {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -185,8 +185,9 @@ export default function Header() {
         {isMenuOpen && (
           <div
             ref={menuRef}
-            className="lg:hidden fixed inset-x-0 top-14 bottom-0 bg-white z-40 overflow-y-auto animate-in slide-in-from-top duration-200"
+            className="lg:hidden fixed inset-x-0 top-14 bottom-0 bg-white hover:bg-gray-800 z-40 overflow-y-auto animate-in slide-in-from-top duration-200"
             style={{ backgroundColor: 'white' }}
+
           >
             <div className="p-3 space-y-1">
               {navItems.map(item => (
@@ -194,7 +195,12 @@ export default function Header() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm hover:bg-gray-50 transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm hover:bg-gray-50 transition-colors"${
+                  pathname === item.href
+                    ? "bg-blue-50 text-blue-600"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                }`}
+                  
                 >
                   <span className="text-gray-500">{item.icon}</span>
                   {item.label}
