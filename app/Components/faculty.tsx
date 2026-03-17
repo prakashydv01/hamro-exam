@@ -19,7 +19,7 @@ interface FacultyCardProps {
   code: string;
   icon?: React.ReactNode;
   questionCount: number;
-  mockTestCount: number;
+  mockTestCount: string | number ;
   iconBgColor?: string;
   iconColor?: string;
 }
@@ -71,13 +71,14 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
             justifyContent: 'center',
             flexShrink: 0
           }}>
-            {icon && React.cloneElement(icon as React.ReactElement, { 
-              style: { 
-                color: iconColor,
-                width: '20px',
-                height: '20px'
-              }
-            })}
+           {icon &&
+               React.cloneElement(icon as React.ReactElement<{ style?: React.CSSProperties }>, {
+                  style: {
+                    color: iconColor,
+                    width: "20px",
+                    height: "20px",
+                    },
+                  })}
           </div>
           <div>
             <h3 style={{

@@ -20,6 +20,7 @@ type MockTestConfig = {
   negativeMarking?: {
     enabled: boolean;
     perWrong: number;
+    
   };
 };
 
@@ -65,6 +66,7 @@ type TestResult = {
 };
 
 type SubmitResponse = {
+  error: string;
   attemptId: string;
   total: number;
   correct: number;
@@ -423,14 +425,14 @@ export default function MockTestPage() {
                 </div>
                 
                 {/* Compulsory Subjects */}
-                {config.subjectRules?.filter(s => s.compulsory).length > 0 && (
+                {(config.subjectRules??[]).filter(s => s.compulsory).length > 0 && (
                   <div className="mb-4">
                     <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
                       <CheckCircle className="w-4 h-4 text-green-500" />
                       Compulsory
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                      {config.subjectRules
+                      {(config.subjectRules??[])
                         .filter(s => s.compulsory)
                         .map(s => (
                           <div key={s.subject} className="bg-green-50 border border-green-200 rounded p-2">

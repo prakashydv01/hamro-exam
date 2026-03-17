@@ -4,7 +4,7 @@ import Attempt from "@/models/Attempt";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-export async function POST(req) {
+export async function POST(req: { json: () => any; }) {
   try {
     await connectDB();
 

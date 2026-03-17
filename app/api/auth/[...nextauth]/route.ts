@@ -68,7 +68,7 @@ export const authOptions: AuthOptions = {
     /* ================= SESSION ================= */
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id; // ✅ NOW AVAILABLE
+        session.user.id = token.id as string; // ✅ NOW AVAILABLE
         session.user.role = token.role;
         session.user.isPremium = token.isPremium;
       }

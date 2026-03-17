@@ -47,7 +47,7 @@ export async function GET() {
 
   /* ================= COLLECT QUESTION IDS ================= */
   const questionIds = attempts.flatMap(a =>
-    a.questions.map(q => q.questionId)
+    a.questions.map((q: { questionId: any; }) => q.questionId)
   );
 
   const questions = await Question.find(
