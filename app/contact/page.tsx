@@ -176,12 +176,12 @@ export default function ContactPage() {
 
           <div className="flex flex-wrap justify-center gap-4">
             {[
-              { name: "Facebook", icon: "📘", url: "https://facebook.com/hamroexam", color: "bg-blue-600" },
+              { name: "Facebook", icon: "📘", url: "https://www.facebook.com/share/1CenutMQVc/", color: "bg-blue-600" },
               
-              { name: "Instagram", icon: "📷", url: "https://instagram.com/hamroexam", color: "bg-pink-600" },
+             
               
-              { name: "YouTube", icon: "▶️", url: "https://youtube.com/@hamroexam", color: "bg-red-600" },
-              { name: "Telegram", icon: "📱", url: "https://t.me/hamroexam", color: "bg-blue-500" }
+              { name: "YouTube", icon: "▶️", url: "https://youtube.com/@hamroexam1?si=XNb6ImrMpmKNFQDd", color: "bg-red-600" },
+              { name: "TikTok", icon: "📱", url: "https://www.tiktok.com/@hamroexam?_r=1&_t=ZS-95MWp30yOsX", color: "bg-gray-900" }
             ].map((social, index) => (
               <a
                 key={index}

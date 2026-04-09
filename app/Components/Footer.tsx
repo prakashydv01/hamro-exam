@@ -15,7 +15,8 @@ import {
   FaBookOpen,
   FaChartLine,
   FaUserGraduate,
-  FaHome
+  FaHome,
+  FaTiktok
 } from 'react-icons/fa';
 import { SiNextdotjs } from 'react-icons/si';
 
@@ -41,19 +42,17 @@ const Footer = () => {
               Empowering students with quality education resources.
             </p>
             <div className="flex space-x-4 pt-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" 
+              <a href="https://www.facebook.com/share/1CenutMQVc/" target="_blank" rel="noopener noreferrer" 
                  className="bg-gray-800 p-2 rounded-lg hover:bg-blue-600 transition-all hover:scale-110">
                 <FaFacebook className="text-xl" />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
-                 className="bg-gray-800 p-2 rounded-lg hover:bg-blue-400 transition-all hover:scale-110">
-                <FaTwitter className="text-xl" />
+              
+              <a href="https://www.tiktok.com/@hamroexam?_r=1&_t=ZS-95MWp30yOsX" target="_blank" rel="noopener noreferrer"
+                 className="bg-gray-800 p-2 rounded-lg hover:bg-gray-900 transition-all hover:scale-110">
+                <FaTiktok className="text-xl" />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
-                 className="bg-gray-800 p-2 rounded-lg hover:bg-pink-600 transition-all hover:scale-110">
-                <FaInstagram className="text-xl" />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"
+              
+              <a href="https://youtube.com/@hamroexam1?si=XNb6ImrMpmKNFQDd" target="_blank" rel="noopener noreferrer"
                  className="bg-gray-800 p-2 rounded-lg hover:bg-red-600 transition-all hover:scale-110">
                 <FaYoutube className="text-xl" />
               </a>

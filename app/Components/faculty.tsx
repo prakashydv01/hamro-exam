@@ -12,6 +12,7 @@ import {
   Shield,
   BookOpen,
   Target 
+  
 } from 'lucide-react';
 
 interface FacultyCardProps {
@@ -49,7 +50,10 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
       borderRadius: '12px',
       border: '1px solid #e5e7eb',
       transition: 'all 0.2s',
-      boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+      boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       {/* Header */}
       <div style={{
@@ -97,7 +101,10 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
       </div>
 
       {/* Stats */}
-      <div style={{ padding: '16px' }}>
+      <div style={{ 
+        padding: '16px',
+        flex: 1
+      }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -140,7 +147,8 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
         {/* Actions */}
         <div style={{
           display: 'flex',
-          gap: '8px'
+          gap: '8px',
+          marginTop: 'auto'
         }}>
           <button
             onClick={handlePractice}
@@ -224,17 +232,15 @@ export default function DashboardPage() {
       iconBgColor: '#ecfdf5',
       iconColor: '#059669'
     },
-    
     {
       name: 'BCA',
       code: 'BCA',
-      icon: <Globe />,
-      questions: 890,
+      icon: <BookOpen />,
+      questions: 1100,
       mockTests: "unlimited",
-      iconBgColor: '#fef2f2',
-      iconColor: '#dc2626'
+      iconBgColor: '#ecfdf5',
+      iconColor: '#059669'
     },
-    
   ];
 
   return (
@@ -247,6 +253,8 @@ export default function DashboardPage() {
         body {
           background-color: #f9fafb !important;
           color: #111827 !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
         svg {
           color: inherit !important;
@@ -257,10 +265,11 @@ export default function DashboardPage() {
       <div style={{
         maxWidth: '1280px',
         margin: '0 auto',
-        padding: '24px'
+        padding: '20px', // Reduced from 24px
+        paddingBottom: '20px' // Consistent padding all around
       }}>
-        {/* Header */}
-        <div style={{ marginBottom: '24px' }}>
+        {/* Header - Reduced margin bottom */}
+        <div style={{ marginBottom: '20px' }}> {/* Reduced from 32px to 20px */}
           <h1 style={{
             fontSize: '24px',
             fontWeight: 600,
@@ -270,15 +279,17 @@ export default function DashboardPage() {
           <p style={{
             fontSize: '14px',
             color: '#6b7280',
-            marginTop: '4px'
+            marginTop: '4px',
+            marginBottom: 0
           }}>Select your faculty to start practicing</p>
         </div>
 
-        {/* Faculty Grid */}
+        {/* Faculty Grid - No extra margin bottom */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(1, 1fr)',
-          gap: '16px'
+          gap: '16px', // Reduced from 20px to 16px
+          marginBottom: 0 // Removed bottom margin
         }}>
           <style>{`
             @media (min-width: 640px) {
@@ -295,7 +306,7 @@ export default function DashboardPage() {
           <div data-grid="true" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(1, 1fr)',
-            gap: '16px'
+            gap: '16px' // Consistent gap
           }}>
             {faculties.map((faculty) => (
               <FacultyCard
@@ -312,8 +323,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Note */}
-        
+        {/* No extra footer or note to minimize bottom gap */}
       </div>
     </div>
   );

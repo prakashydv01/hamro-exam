@@ -21,7 +21,7 @@ const menu = [
   { href: "/dashboard", label: "Overview", icon: Home },
   { href: "/dashboard/practice", label: "Practice", icon: BookOpen },
   { href: "/dashboard/mocktest", label: "Mock Tests", icon: FileText },
-  { href: "/dashboard/history", label: "History", icon: BarChart3 },
+  
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
