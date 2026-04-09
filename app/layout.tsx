@@ -8,8 +8,8 @@ import Providers from './provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'QuizTaker - Next.js Test Platform',
-  description: 'A modern test preparation platform built with Next.js',
+  title: 'Hamro Exam - Exam Preparation Platform',
+  description: 'Hamro Exam is a comprehensive exam preparation platform designed to help students excel in their academic pursuits. We offer a wide range of resources, including mock tests, study materials, and expert guidance, to ensure that students are well-prepared for their exams. Our mission is to empower students with the tools and knowledge they need to succeed in their educational journey.',
 }
 
 export default function RootLayout({
