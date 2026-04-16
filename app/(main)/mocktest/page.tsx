@@ -49,7 +49,7 @@ export default function MockTestListPage() {
 
   const handleSelectFaculty = (faculty: string) => {
     const slug = faculty.toLowerCase().replace(/\s+/g, "-");
-    router.push(`/dashboard/mocktest/${slug}`);
+    router.push(`/mocktest/${slug}`);
   };
 
   return (
