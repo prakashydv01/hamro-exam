@@ -1,8 +1,16 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = "https://hamroexam.com"; // 🔥 change this
+const BASE_URL = "https://hamroexam.com";
 
-// ✅ Fetch faculties
+/* ---------------- SLUGIFY FUNCTION ---------------- */
+const slugify = (text: string) =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+
+/* ---------------- FETCH FACULTIES ---------------- */
 async function getFaculties(): Promise<string[]> {
   try {
     const res = await fetch(`${BASE_URL}/api/practice`, {
@@ -15,7 +23,7 @@ async function getFaculties(): Promise<string[]> {
   }
 }
 
-// ✅ Fetch subjects
+/* ---------------- FETCH SUBJECTS ---------------- */
 async function getSubjects(faculty: string): Promise<string[]> {
   try {
     const res = await fetch(
@@ -29,6 +37,7 @@ async function getSubjects(faculty: string): Promise<string[]> {
   }
 }
 
+/* ---------------- SITEMAP ---------------- */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
@@ -37,7 +46,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "",
     "/practice",
     "/mocktest",
-    
     "/about",
     "/contact",
     "/privacy-policy",
@@ -58,9 +66,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const dynamicUrls: MetadataRoute.Sitemap = [];
 
   for (const faculty of faculties) {
-    const facultySlug = encodeURIComponent(faculty);
+    const facultySlug = slugify(faculty);
 
-    // ✅ mocktest pages
+    /* ---------------- MOCKTEST ---------------- */
     dynamicUrls.push({
       url: `${BASE_URL}/mocktest/${facultySlug}`,
       lastModified: now,
@@ -68,11 +76,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     });
 
-    // ✅ practice faculty pages
+    /* ---------------- PRACTICE SUBJECTS ---------------- */
     const subjects = await getSubjects(faculty);
 
     for (const subject of subjects) {
-      const subjectSlug = encodeURIComponent(subject);
+      const subjectSlug = slugify(subject);
 
       dynamicUrls.push({
         url: `${BASE_URL}/practice/${facultySlug}/${subjectSlug}`,
