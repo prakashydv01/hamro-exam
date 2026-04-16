@@ -4,12 +4,14 @@ import './globals.css'
 import Header from '@/app/Components/Header'
 import Footer from '@/app/Components/Footer'
 import Providers from './provider'
+import Script from 'next/script'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Hamro Exam - Exam Preparation Platform',
-  description: 'Hamro Exam is a comprehensive exam preparation platform designed to help students excel in their academic pursuits. We offer a wide range of resources, including mock tests, study materials, and expert guidance, to ensure that students are well-prepared for their exams. Our mission is to empower students with the tools and knowledge they need to succeed in their educational journey.',
+  description:
+    'Hamro Exam is a comprehensive exam preparation platform designed to help students excel in their academic pursuits.',
 }
 
 export default function RootLayout({
@@ -22,9 +24,18 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Header />
-          <main className="min-h-screen">
-            {children}
-          </main>
+
+          {/* ✅ Google AdSense Script (CORRECT WAY) */}
+          <Script
+            id="adsense-script"
+            async
+            strategy="afterInteractive"
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5140324631395842"
+            crossOrigin="anonymous"
+          />
+
+          <main className="min-h-screen">{children}</main>
+
           <Footer />
         </Providers>
       </body>
