@@ -37,11 +37,11 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
   const router = useRouter();
 
   const handlePractice = () => {
-    router.push('/dashboard');
+    router.push('/practice');
   };
 
   const handleMockTest = () => {
-    router.push('/dashboard');
+    router.push('/mocktest');
   };
 
   return (

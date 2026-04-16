@@ -81,8 +81,8 @@ export default function Header() {
   /* ================= NAV ITEMS ================= */
   const navItems = [
     { href: "/", label: "Home", icon: <Home size={18} /> },
-    { href: "/dashboard/mocktest", label: "Mock Test", icon: <BookOpen size={18} /> },
-    { href: "/dashboard/practice", label: "Practice", icon: <Book size={18} /> },
+    { href: "/mocktest", label: "Mock Test", icon: <BookOpen size={18} /> },
+    { href: "/practice", label: "Practice", icon: <Book size={18} /> },
     
   ];
 
