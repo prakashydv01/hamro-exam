@@ -92,9 +92,9 @@ const Footer = () => {
             <ul className="space-y-3">
               {[
                
-                { href: '/dashboard/mocktest', label: 'Mock Tests', icon: <FaBookOpen className="inline mr-2" /> },
+                { href: '/mocktest', label: 'Mock Tests', icon: <FaBookOpen className="inline mr-2" /> },
                 
-                { href: '/dashboard/practice', label: 'Practice', icon: <FaUserGraduate className="inline mr-2" /> },
+                { href: '/practice', label: 'Practice', icon: <FaUserGraduate className="inline mr-2" /> },
                 
               ].map((link) => (
                 <li key={link.href}>

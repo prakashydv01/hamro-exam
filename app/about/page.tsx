@@ -43,7 +43,7 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link 
-                href="/dashboard/mocktest" 
+                href="/mocktest" 
                 className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl inline-flex items-center"
               >
                 Start Practicing

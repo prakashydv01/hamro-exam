@@ -230,7 +230,7 @@ const UserGuide = () => {
             Every question you solve brings you closer to your dream college. <strong>Hamro Exam ma swagat cha!</strong> (Welcome to Hamro Exam!)
           </p>
           <div className="mt-4">
-            <a href="/dashboard" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+            <a href="/practice" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
               Start Practicing Now →
             </a>
           </div>
