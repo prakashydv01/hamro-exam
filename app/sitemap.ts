@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = "http://localhost:3000"; // 🔥 UPDATE THIS TO YOUR PRODUCTION URL
+const BASE_URL = "https://hamroexam.com"; // 🔥 UPDATE THIS TO YOUR PRODUCTION URL
 
 /* ---------------- SLUG FUNCTION ---------------- */
 const toSlug = (text: string) =>
