@@ -24,3 +24,25 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    await connectDB();
+
+    const configs = await MockTestConfig.find();
+
+    // 🔥 IMPORTANT: map correctly
+    const faculties = configs.map((item) => item.faculty);
+
+    // 🔥 REMOVE duplicates
+    const uniqueFaculties = [...new Set(faculties)];
+
+    return NextResponse.json({ data: uniqueFaculties });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+}
+

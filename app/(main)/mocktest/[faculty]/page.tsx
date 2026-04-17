@@ -135,7 +135,7 @@ export default function FacultyPage() {
       localStorage.setItem("mocktest_attemptId", data.attemptId || "");
       localStorage.setItem("mocktest_duration", data.durationMinutes.toString());
 
-      router.push(`/dashboard/mocktest/${facultySlug}/start`);
+      router.push(`/mocktest/${facultySlug}/start`);
     } catch (err) {
       console.error(err);
       alert("Something went wrong");
