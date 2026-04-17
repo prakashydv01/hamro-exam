@@ -48,8 +48,16 @@ export default function ResultPage() {
       const data = JSON.parse(localStorage.getItem("mocktest_result") || "null");
       if (data) {
         // Calculate percentage if not present
-        if (data.total && data.correct) {
+        if (data.total && data.correct !== undefined) {
           data.percentage = (data.correct / data.total) * 100;
+        }
+        // Handle score if it's an object (from the new structure)
+        if (data.score && typeof data.score === 'object') {
+          data.total = data.score.total;
+          data.correct = data.score.obtained;
+          data.wrong = data.score.total - data.score.obtained;
+          data.score = data.score.percentage;
+          data.percentage = data.score;
         }
         // Add timestamp if not present
         if (!data.date) {
@@ -82,14 +90,18 @@ export default function ResultPage() {
       doc.setTextColor(100, 100, 100);
       doc.text(`Generated: ${result.date || new Date().toLocaleString()}`, 105, 30, { align: "center" });
       
+      // Get safe percentage value
+      const safePercentage = typeof result.percentage === 'number' ? result.percentage : 
+                            (typeof result.score === 'number' ? result.score : 0);
+      
       // Score Card
       doc.setFillColor(59, 130, 246);
       doc.rect(20, 40, 170, 40, "F");
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(16);
-      doc.text(`Score: ${result.score}%`, 105, 55, { align: "center" });
+      doc.text(`Score: ${safePercentage.toFixed(1)}%`, 105, 55, { align: "center" });
       doc.setFontSize(12);
-      doc.text(`Result: ${result.percentage && result.percentage >= 60 ? "PASSED" : "NEEDS IMPROVEMENT"}`, 105, 68, { align: "center" });
+      doc.text(`Result: ${safePercentage >= 60 ? "PASSED" : "NEEDS IMPROVEMENT"}`, 105, 68, { align: "center" });
       
       // Statistics Table
       doc.setTextColor(0, 0, 0);
@@ -97,11 +109,11 @@ export default function ResultPage() {
       doc.text("Performance Summary", 20, 95);
       
       const statsData = [
-        ["Total Questions", result.total.toString()],
-        ["Correct Answers", result.correct.toString()],
-        ["Wrong Answers", result.wrong.toString()],
-        ["Accuracy", `${result.percentage?.toFixed(1)}%`],
-        ["Status", result.percentage && result.percentage >= 60 ? "PASSED" : "NEEDS IMPROVEMENT"],
+        ["Total Questions", result.total?.toString() || "0"],
+        ["Correct Answers", result.correct?.toString() || "0"],
+        ["Wrong Answers", result.wrong?.toString() || "0"],
+        ["Accuracy", `${safePercentage.toFixed(1)}%`],
+        ["Status", safePercentage >= 60 ? "PASSED" : "NEEDS IMPROVEMENT"],
       ];
       
       autoTable(doc, {
@@ -202,9 +214,28 @@ export default function ResultPage() {
     );
   }
 
-  const percentage = result.percentage || (result.score || 0);
-  const scoreColor = getScoreColor(percentage);
-  const scoreMessage = getScoreMessage(percentage);
+  // Safely extract and validate percentage
+  let percentage: number;
+  if (typeof result.percentage === 'number' && !isNaN(result.percentage)) {
+    percentage = result.percentage;
+  } else if (typeof result.score === 'number' && !isNaN(result.score)) {
+    percentage = result.score;
+  } else if (result.total && result.correct !== undefined) {
+    percentage = (result.correct / result.total) * 100;
+  } else {
+    percentage = 0;
+  }
+  
+  // Ensure percentage is a valid number
+  const safePercentage = isNaN(percentage) ? 0 : percentage;
+  const scoreColor = getScoreColor(safePercentage);
+  const scoreMessage = getScoreMessage(safePercentage);
+  
+  // Safely get other values
+  const totalQuestions = result.total || 0;
+  const correctAnswers = result.correct || 0;
+  const wrongAnswers = result.wrong || (totalQuestions - correctAnswers);
+  const displayScore = typeof result.score === 'number' ? result.score : safePercentage;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -226,10 +257,10 @@ export default function ResultPage() {
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 mb-6">
           <div className="text-center">
             <div className={`text-6xl font-bold ${scoreColor} mb-3`}>
-              {percentage.toFixed(1)}%
+              {safePercentage.toFixed(1)}%
             </div>
             <div className={`text-lg font-semibold ${scoreColor} mb-2`}>
-              Score: {result.score} / {result.total}
+              Score: {displayScore} / {totalQuestions}
             </div>
             <p className="text-slate-600 text-sm">
               {scoreMessage}
@@ -242,21 +273,21 @@ export default function ResultPage() {
               <div className="inline-flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full mb-2">
                 <FileText className="w-5 h-5 text-blue-600" />
               </div>
-              <div className="text-2xl font-bold text-slate-900">{result.total}</div>
+              <div className="text-2xl font-bold text-slate-900">{totalQuestions}</div>
               <div className="text-xs text-slate-500">Total Questions</div>
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-10 h-10 bg-green-100 rounded-full mb-2">
                 <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
-              <div className="text-2xl font-bold text-green-600">{result.correct}</div>
+              <div className="text-2xl font-bold text-green-600">{correctAnswers}</div>
               <div className="text-xs text-slate-500">Correct</div>
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-10 h-10 bg-red-100 rounded-full mb-2">
                 <XCircle className="w-5 h-5 text-red-600" />
               </div>
-              <div className="text-2xl font-bold text-red-600">{result.wrong}</div>
+              <div className="text-2xl font-bold text-red-600">{wrongAnswers}</div>
               <div className="text-xs text-slate-500">Wrong</div>
             </div>
             <div className="text-center">
@@ -264,7 +295,7 @@ export default function ResultPage() {
                 <Target className="w-5 h-5 text-purple-600" />
               </div>
               <div className="text-2xl font-bold text-purple-600">
-                {((result.correct / result.total) * 100).toFixed(0)}%
+                {safePercentage.toFixed(0)}%
               </div>
               <div className="text-xs text-slate-500">Accuracy</div>
             </div>

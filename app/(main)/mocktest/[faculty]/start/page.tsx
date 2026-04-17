@@ -21,6 +21,18 @@ type Question = {
   correctAnswer: number;
 };
 
+type SavedAttempt = {
+  attemptId: string;
+  questions: Question[];
+  answers: Record<string, number>;
+  timestamp: number;
+  score?: {
+    total: number;
+    obtained: number;
+    percentage: number;
+  };
+};
+
 // Helper function to render math with KaTeX
 const renderMath = (text: string) => {
   // Check if the text contains math delimiters
@@ -76,9 +88,46 @@ export default function StartTestPage() {
       const durationRaw = localStorage.getItem("mocktest_duration");
       const duration = durationRaw ? Number(durationRaw) : 0;
 
+      // Check for saved attempt in localStorage
+      const savedAttemptRaw = localStorage.getItem("mocktest_current_attempt");
+      if (savedAttemptRaw && savedAttemptRaw !== "undefined") {
+        const savedAttempt: SavedAttempt = JSON.parse(savedAttemptRaw);
+        // Check if saved attempt is for the same questions and not submitted
+        if (savedAttempt.questions.length === parsed.length && !savedAttempt.score) {
+          setQuestions(savedAttempt.questions);
+          // Convert answers object to array
+          const answersArray = parsed.map((q: Question, idx: number) => {
+            const answer = savedAttempt.answers[q._id];
+            return answer !== undefined ? answer : null;
+          });
+          setAnswers(answersArray);
+          
+          // Load saved timer if exists
+          const savedTimer = localStorage.getItem("mocktest_timer");
+          if (savedTimer) {
+            setTimeLeft(parseInt(savedTimer));
+          } else if (duration > 0) {
+            setTimeLeft(duration * 60);
+          }
+          
+          setTimerActive(true);
+          return;
+        }
+      }
+
       if (Array.isArray(parsed) && parsed.length > 0) {
         setQuestions(parsed);
         setAnswers(new Array(parsed.length).fill(null));
+        
+        // Create new attempt in localStorage
+        const attemptId = `attempt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const newAttempt: SavedAttempt = {
+          attemptId,
+          questions: parsed,
+          answers: {},
+          timestamp: Date.now()
+        };
+        localStorage.setItem("mocktest_current_attempt", JSON.stringify(newAttempt));
       } else {
         // No questions found, redirect back
         router.back();
@@ -94,9 +143,28 @@ export default function StartTestPage() {
     }
   }, [router]);
 
+  /* ================= SAVE ANSWERS TO LOCALSTORAGE ================= */
+  const saveAnswersToLocalStorage = (updatedAnswers: (number | null)[]) => {
+    const savedAttemptRaw = localStorage.getItem("mocktest_current_attempt");
+    if (savedAttemptRaw && savedAttemptRaw !== "undefined") {
+      const savedAttempt: SavedAttempt = JSON.parse(savedAttemptRaw);
+      const answersObject: Record<string, number> = {};
+      questions.forEach((q, idx) => {
+        if (updatedAnswers[idx] !== null) {
+          answersObject[q._id] = updatedAnswers[idx] as number;
+        }
+      });
+      savedAttempt.answers = answersObject;
+      localStorage.setItem("mocktest_current_attempt", JSON.stringify(savedAttempt));
+    }
+  };
+
   /* ================= TIMER ================= */
   useEffect(() => {
     if (!timerActive || timeLeft <= 0) return;
+
+    // Save timer to localStorage every second
+    localStorage.setItem("mocktest_timer", timeLeft.toString());
 
     const interval = setInterval(() => {
       setTimeLeft((prev) => {
@@ -105,7 +173,9 @@ export default function StartTestPage() {
           submitTest();
           return 0;
         }
-        return prev - 1;
+        const newTime = prev - 1;
+        localStorage.setItem("mocktest_timer", newTime.toString());
+        return newTime;
       });
     }, 1000);
 
@@ -134,6 +204,22 @@ export default function StartTestPage() {
     const updated = [...answers];
     updated[current] = index;
     setAnswers(updated);
+    saveAnswersToLocalStorage(updated);
+  };
+
+  /* ================= CALCULATE SCORE ================= */
+  const calculateScore = () => {
+    let obtained = 0;
+    questions.forEach((q, idx) => {
+      if (answers[idx] === q.correctAnswer) {
+        obtained++;
+      }
+    });
+    return {
+      total: questions.length,
+      obtained,
+      percentage: (obtained / questions.length) * 100
+    };
   };
 
   /* ================= SUBMIT ================= */
@@ -143,36 +229,42 @@ export default function StartTestPage() {
     setTimerActive(false);
     setSubmitting(true);
 
-    const attemptId = localStorage.getItem("mocktest_attemptId");
-    const formatted: Record<string, number> = {};
-
-    questions.forEach((q, i) => {
-      if (answers[i] !== null) {
-        formatted[q._id] = answers[i] as number;
-      }
-    });
-
-    try {
-      const res = await fetch("/api/mocktest/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          attemptId,
-          answers: formatted,
-        }),
-      });
-
-      const data = await res.json();
-      localStorage.setItem("mocktest_result", JSON.stringify(data));
-      router.push(window.location.pathname.replace("start", "result"));
-    } catch (err) {
-      console.error(err);
-      alert("Failed to submit test. Please try again.");
-      setSubmitting(false);
-      setTimerActive(true);
+    // Calculate score
+    const score = calculateScore();
+    
+    // Get current attempt
+    const savedAttemptRaw = localStorage.getItem("mocktest_current_attempt");
+    if (savedAttemptRaw && savedAttemptRaw !== "undefined") {
+      const savedAttempt: SavedAttempt = JSON.parse(savedAttemptRaw);
+      savedAttempt.score = score;
+      
+      // Save to submitted attempts history
+      const historyRaw = localStorage.getItem("mocktest_history");
+      const history: SavedAttempt[] = historyRaw ? JSON.parse(historyRaw) : [];
+      history.push(savedAttempt);
+      localStorage.setItem("mocktest_history", JSON.stringify(history));
+      
+      // Store result for results page
+      const result = {
+        score,
+        attemptId: savedAttempt.attemptId,
+        questions: questions.map((q, idx) => ({
+          ...q,
+          userAnswer: answers[idx],
+          isCorrect: answers[idx] === q.correctAnswer
+        }))
+      };
+      localStorage.setItem("mocktest_result", JSON.stringify(result));
+      
+      // Clear current attempt and timer
+      localStorage.removeItem("mocktest_current_attempt");
+      localStorage.removeItem("mocktest_timer");
     }
+
+    // Simulate API delay for better UX
+    setTimeout(() => {
+      router.push(window.location.pathname.replace("start", "result"));
+    }, 500);
   };
 
   const answeredCount = answers.filter(a => a !== null).length;
