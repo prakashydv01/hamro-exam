@@ -77,8 +77,13 @@ export async function PUT(req: Request) {
 /* ================= DELETE ================= */
 export async function DELETE(req: Request) {
   await connectDB();
-  const { id } = await req.json();
+  const { ids, faculty, subject } = await req.json();
 
-  await Question.findByIdAndDelete(id);
+  if (ids) {
+    await Question.deleteMany({ _id: { $in: ids } });
+  } else if (faculty && subject) {
+    await Question.deleteMany({ faculty, subject });
+  }
+
   return NextResponse.json({ success: true });
 }

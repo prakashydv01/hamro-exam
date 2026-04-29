@@ -283,12 +283,7 @@ export default function EntranceFaqSection() {
                           {/* Related Links */}
                           {faq.subcategory === "colleges" && (
                             <div className="mt-4">
-                              <Link 
-                                href={`/colleges/${faq.category.toLowerCase()}`}
-                                className="text-sm text-blue-600 hover:underline inline-flex items-center gap-1"
-                              >
-                                View all {faq.category} colleges →
-                              </Link>
+                              
                             </div>
                           )}
                         </div>
