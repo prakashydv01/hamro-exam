@@ -13,7 +13,7 @@ export async function generateMetadata() {
       title: "Model Questions Hub",
       description: "Your complete resource for exam preparation - Access model questions across all faculties",
       type: "website",
-      url: "https://yourdomain.com/model-questions",
+      url: "https://hamroexam.com/model-questions",
     },
     twitter: {
       card: "summary_large_image",

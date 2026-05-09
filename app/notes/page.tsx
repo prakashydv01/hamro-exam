@@ -37,10 +37,10 @@ export default async function NotesHome() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
-                Entrance Syllabus
+                Entrance Preparation Notes
               </h1>
               <p className="mt-0.5 text-sm text-gray-500">
-                Select your faculty to get started
+                Select your faculty to get Notes
               </p>
             </div>
 

@@ -14,6 +14,9 @@ import {
   Book,
   BarChart,
   BookAIcon,
+  BookAlertIcon,
+  ListChecks,
+  FileQuestion,
   
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
@@ -87,8 +90,8 @@ export default function Header() {
     { href: "/mocktest", label: "Mock Test", icon: <BookOpen size={18} /> },
     { href: "/practice", label: "Practice", icon: <Book size={18} /> },
     { href: "/notes", label: "Entrance Notes", icon: <BookAIcon size={18} /> },
-    
-    { href: "/model-questions", label: "Model Questions", icon: <BarChart size={18} /> },
+    {href: "/syllabus", label: "Syllabus", icon: <ListChecks size={18} /> },
+    { href: "/model-questions", label: "Model Questions", icon: <BookAlertIcon size={18} /> },
     
   ];
 
