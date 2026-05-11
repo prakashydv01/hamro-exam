@@ -16,7 +16,10 @@ import {
   FaChartLine,
   FaUserGraduate,
   FaHome,
-  FaTiktok
+  FaTiktok,
+  FaBook,
+  FaBookReader,
+  FaBookDead
 } from 'react-icons/fa';
 import { SiNextdotjs } from 'react-icons/si';
 
@@ -95,6 +98,9 @@ const Footer = () => {
                 { href: '/mocktest', label: 'Mock Tests', icon: <FaBookOpen className="inline mr-2" /> },
                 
                 { href: '/practice', label: 'Practice', icon: <FaUserGraduate className="inline mr-2" /> },
+                { href: '/notes', label: 'Notes', icon: <FaBook className="inline mr-2" /> },
+                { href: '/syllabus', label: 'Syllabus', icon: <FaBookReader className="inline mr-2" /> },
+                { href: '/model-questions', label: 'Model Questions', icon: <FaBookDead className="inline mr-2" /> },
                 
               ].map((link) => (
                 <li key={link.href}>
