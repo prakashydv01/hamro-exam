@@ -130,8 +130,7 @@ export default function AboutPage() {
                 />
               </div>
               <div className="absolute -bottom-6 -right-6 bg-yellow-400 text-yellow-900 p-6 rounded-2xl shadow-xl max-w-xs">
-                <div className="text-4xl font-bold mb-2">10+</div>
-                <div className="font-semibold">Years of Excellence in Education</div>
+                <h3 className="text-lg font-semibold">Join Our Community</h3>
               </div>
             </div>
           </div>
@@ -227,7 +226,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-6 lg:grid-cols-3 gap-8">
             {[
               {
                 name: "Prakash Yadav",
@@ -235,20 +234,15 @@ export default function AboutPage() {
                 bio: "Professional technology enthusiast with a passion for education",
                 color: "3b82f6"
               },
+              
               {
-                name: "Michael Chen",
-                role: "Head of Product",
-                bio: "EdTech innovator passionate about student success",
-                color: "10b981"
-              },
-              {
-                name: "Prof. Emily Williams",
-                role: "Curriculum Director",
+                name: "Sita Poudel",
+                role: "Content Strategist",
                 bio: "Expert in exam preparation and assessment design",
                 color: "8b5cf6"
               },
               {
-                name: "David Kumar",
+                name: "Ramesh Rai",
                 role: "Lead Developer",
                 bio: "Building scalable platforms for millions of students",
                 color: "f59e0b"

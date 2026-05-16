@@ -7,17 +7,17 @@ export default function HeroSimple() {
     <section className="bg-white border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Site Name with primary keywords */}
+          {/* Site Name with primary keywords – natural and visible */}
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             Hamro <span className="text-blue-600">Exam</span>
           </h1>
           
-          {/* Tagline – secondary keywords */}
+          {/* Tagline – natural, user‑oriented */}
           <p className="text-xl md:text-2xl text-gray-600 mb-6">
             Your Gateway to Entrance Exam Success
           </p>
           
-          {/* Description – natural keyword placement */}
+          {/* Description – natural keyword placement, valuable to users */}
           <p className="text-base md:text-lg text-gray-500 mb-10 max-w-2xl mx-auto">
             Prepare for <strong className="text-gray-700">BSc.CSIT, BIT, IOE, and BCA</strong> entrance exams with 
             thousands of practice questions, mock tests, and detailed analytics – all in one place.
@@ -42,10 +42,7 @@ export default function HeroSimple() {
             </Link>
           </div>
 
-          {/* Hidden SEO keywords for additional density (screen reader only) */}
-          <div className="sr-only" aria-hidden="true">
-            model questions, practice tests, BIT preparation, BCA mock exam, IOE entrance guide, CSIT syllabus, Nepal entrance hub.
-          </div>
+          {/* ✅ REMOVED hidden SEO keywords div – no sr-only lists, no stuffing */}
         </div>
       </div>
     </section>

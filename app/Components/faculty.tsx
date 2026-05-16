@@ -22,9 +22,10 @@ interface FacultyCardProps {
   mockTestCount: string | number;
   iconBgColor?: string;
   iconColor?: string;
+  description: string;   // natural, user‑oriented description
 }
 
-// Individual faculty card with embedded SEO keywords
+// Individual faculty card – no keyword stuffing, only natural content
 const FacultyCard: React.FC<FacultyCardProps> = ({
   name,
   code,
@@ -32,15 +33,13 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
   questionCount,
   mockTestCount,
   iconBgColor = '#eff6ff',
-  iconColor = '#2563eb'
+  iconColor = '#2563eb',
+  description
 }) => {
   const router = useRouter();
 
   const handlePractice = () => router.push('/practice');
   const handleMockTest = () => router.push('/mocktest');
-
-  // SEO keywords relevant to this faculty
-  const seoKeywords = `${name} entrance preparation, ${name} model questions, ${name} mock test, ${name} practice papers, ${name} exam guide`.toLowerCase();
 
   return (
     <div
@@ -53,14 +52,8 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        position: 'relative',
       }}
     >
-      {/* Hidden SEO keywords for search engines (optional but safe) */}
-      <span className="sr-only" style={{ position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', border: 0 }}>
-        {seoKeywords}
-      </span>
-
       {/* Header */}
       <div style={{ padding: '16px', borderBottom: '1px solid #f3f4f6' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -91,7 +84,7 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
         </div>
       </div>
 
-      {/* Stats + visible SEO keywords */}
+      {/* Stats + natural description */}
       <div style={{ padding: '16px', flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div style={{ textAlign: 'center', flex: 1 }}>
@@ -107,18 +100,10 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
           </div>
         </div>
 
-        {/* Visible SEO keyword tags inside the card */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
-          <span className="seo-keyword" style={{ fontSize: '10px', backgroundColor: '#f3f4f6', padding: '2px 8px', borderRadius: '12px', color: '#4b5563' }}>
-            {name} preparation
-          </span>
-          <span className="seo-keyword" style={{ fontSize: '10px', backgroundColor: '#f3f4f6', padding: '2px 8px', borderRadius: '12px', color: '#4b5563' }}>
-            {name} model questions
-          </span>
-          <span className="seo-keyword" style={{ fontSize: '10px', backgroundColor: '#f3f4f6', padding: '2px 8px', borderRadius: '12px', color: '#4b5563' }}>
-            {name} mock test
-          </span>
-        </div>
+        {/* Natural description – replaces keyword tags */}
+        <p style={{ fontSize: '13px', color: '#4b5563', marginBottom: '20px', lineHeight: 1.4 }}>
+          {description}
+        </p>
 
         {/* Action Buttons */}
         <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
@@ -187,6 +172,7 @@ export default function DashboardClient() {
       mockTests: "unlimited",
       iconBgColor: '#eff6ff',
       iconColor: '#2563eb',
+      description: 'Prepare for your BIT entrance exam with 1250+ topic‑wise questions and unlimited mock tests covering all sections.'
     },
     {
       name: 'Bsc.CSIT',
@@ -196,6 +182,7 @@ export default function DashboardClient() {
       mockTests: "unlimited",
       iconBgColor: '#f5f3ff',
       iconColor: '#7c3aed',
+      description: 'Master BSc.CSIT concepts through 1450+ practice questions and full‑length mock tests designed by experts.'
     },
     {
       name: 'IOE',
@@ -205,6 +192,7 @@ export default function DashboardClient() {
       mockTests: "unlimited",
       iconBgColor: '#ecfdf5',
       iconColor: '#059669',
+      description: 'Ace your IOE entrance with 1100+ model questions and unlimited mock tests mirroring the real exam pattern.'
     },
     {
       name: 'BCA',
@@ -214,6 +202,7 @@ export default function DashboardClient() {
       mockTests: "unlimited",
       iconBgColor: '#ecfdf5',
       iconColor: '#059669',
+      description: 'Strengthen your BCA preparation using 1100+ curated questions and adaptive mock tests for thorough practice.'
     },
   ];
 
@@ -237,7 +226,6 @@ export default function DashboardClient() {
             grid-template-columns: repeat(2, 1fr) !important;
           }
         }
-        /* Keep 2 columns even on large screens (user request: "two card in one row") */
         @media (min-width: 1024px) {
           .faculty-grid {
             grid-template-columns: repeat(2, 1fr) !important;
@@ -246,7 +234,7 @@ export default function DashboardClient() {
       `}</style>
 
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '20px' }}>
-        {/* Header SEO-friendly */}
+        {/* Header SEO-friendly – natural language */}
         <header style={{ marginBottom: '20px' }}>
           <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827', margin: 0 }}>
             Faculty Dashboard
@@ -268,12 +256,10 @@ export default function DashboardClient() {
               mockTestCount={faculty.mockTests}
               iconBgColor={faculty.iconBgColor}
               iconColor={faculty.iconColor}
+              description={faculty.description}
             />
           ))}
         </div>
-
-        {/* Optional footer note – kept minimal */}
-        
       </div>
     </div>
   );
