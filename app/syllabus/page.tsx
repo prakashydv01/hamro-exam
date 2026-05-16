@@ -30,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "Complete Entrance Syllabus for Nepal Faculties | BIT, BCA, CSIT, IOE",
       description: "Access detailed syllabus for all major faculties. Updated regularly with official course structures and subject breakdowns.",
       type: "website",
-      url: "https://yourdomain.com/syllabus",
+      url: "https://hamroexam.com/syllabus",
       siteName: "Entrance Syllabus Nepal",
     },
     twitter: {
@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
       follow: true,
     },
     alternates: {
-      canonical: "https://yourdomain.com/syllabus",
+      canonical: "https://hamroexam.com/syllabus",
     },
   };
 }
@@ -57,13 +57,13 @@ export default async function SyllabusPage() {
     "@type": "ItemList",
     "name": "Entrance Syllabus for Nepal Faculties",
     "description": "Comprehensive syllabus listing for undergraduate entrance examinations in Nepal.",
-    "url": "https://yourdomain.com/syllabus",
+    "url": "https://hamroexam.com/syllabus",
     "numberOfItems": syllabusList.length,
     "itemListElement": syllabusList.map((item: any, idx: number) => ({
       "@type": "ListItem",
       "position": idx + 1,
       "name": `${item.fields.faculty} Syllabus`,
-      "url": `https://yourdomain.com/syllabus/${item.fields.slug}`,
+      "url": `https://hamroexam.com/syllabus/${item.fields.slug}`,
       "description": `Complete entrance syllabus, subjects, and marking scheme for ${item.fields.faculty}.`
     })),
     "inLanguage": "en",

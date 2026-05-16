@@ -64,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "Entrance Preparation Notes for Nepal's Top Faculties",
       description: `Comprehensive study materials for ${facultyNames}. Free entrance notes for BIT, BCA, BSc.CSIT, IOE and more.`,
       type: "website",
-      url: "https://yourdomain.com/notes",
+      url: "https://hamroexam.com/notes",
       siteName: "Entrance Notes Nepal",
     },
     twitter: {
@@ -77,7 +77,7 @@ export async function generateMetadata(): Promise<Metadata> {
       follow: true,
     },
     alternates: {
-      canonical: "https://yourdomain.com/notes",
+      canonical: "https://hamroexam.com/notes",
     },
   };
 }
@@ -91,7 +91,7 @@ export default async function NotesHome() {
     "@type": "CollectionPage",
     "name": "Entrance Preparation Notes",
     "description": "Comprehensive entrance notes and study materials for various faculties in Nepal",
-    "url": "https://yourdomain.com/notes",
+    "url": "https://hamroexam.com/notes",
     "numberOfItems": totalNotes,
     "about": uniqueFaculties.map((faculty: any) => ({
       "@type": "EducationalOccupationalProgram",

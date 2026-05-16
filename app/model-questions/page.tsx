@@ -46,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "Model Questions for All Faculties | Entrance Exam Hub",
       description: `Free model questions for ${facultyNames}. Practice with real exam patterns and download PDFs.`,
       type: "website",
-      url: "https://yourdomain.com/model-questions",
+      url: "https://hamroexam.com/model-questions",
       siteName: "Model Questions Nepal",
     },
     twitter: {
@@ -61,7 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "max-image-preview": "large",
     },
     alternates: {
-      canonical: "https://yourdomain.com/model-questions",
+      canonical: "https://hamroexam.com/model-questions",
     },
   };
 }
@@ -75,13 +75,13 @@ export default async function MQHome() {
     "@type": "ItemList",
     "name": "Model Questions for Entrance Examinations",
     "description": "Collection of model questions for various faculties in Nepal.",
-    "url": "https://yourdomain.com/model-questions",
+    "url": "https://hamroexam.com/model-questions",
     "numberOfItems": totalQuestions,
     "itemListElement": faculties.map((faculty, idx) => ({
       "@type": "ListItem",
       "position": idx + 1,
       "name": `${faculty.name} Model Questions`,
-      "url": `https://yourdomain.com/model-questions/${faculty.slug}`,
+      "url": `https://hamroexam.com/model-questions/${faculty.slug}`,
       "description": `${faculty.count} model question(s) for ${faculty.name} entrance preparation.`
     })),
     "inLanguage": "en",

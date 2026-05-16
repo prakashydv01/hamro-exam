@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ faculty: 
       title: `${facultyName} Model Questions – Practice for Entrance Exams`,
       description: `Free ${facultyName} model questions with PDF downloads. Perfect for BIT, BCA, BSc.CSIT, IOE entrance prep.`,
       type: "website",
-      url: `https://yourdomain.com/model-questions/${faculty}`,
+      url: `https://hamroexam.com/model-questions/${faculty}`,
       siteName: "Entrance Hub",
     },
     twitter: {
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ faculty: 
       follow: true,
     },
     alternates: {
-      canonical: `https://yourdomain.com/model-questions/${faculty}`,
+      canonical: `https://hamroexam.com/model-questions/${faculty}`,
     },
   };
 }
@@ -65,7 +65,7 @@ export default async function FacultyMQ({ params }: { params: Promise<{ faculty:
       "@type": "ListItem",
       "position": idx + 1,
       "name": item.fields.title,
-      "url": `https://yourdomain.com/model-questions/${faculty}/${item.fields.slug}`,
+      "url": `https://hamroexam.com/model-questions/${faculty}/${item.fields.slug}`,
       "description": item.fields.description || `${facultyName} practice question ${idx + 1}`,
     })),
   };
@@ -75,9 +75,9 @@ export default async function FacultyMQ({ params }: { params: Promise<{ faculty:
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://yourdomain.com/" },
-      { "@type": "ListItem", "position": 2, "name": "Model Questions", "item": "https://yourdomain.com/model-questions" },
-      { "@type": "ListItem", "position": 3, "name": facultyName, "item": `https://yourdomain.com/model-questions/${faculty}` },
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://hamroexam.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Model Questions", "item": "https://hamroexam.com/model-questions" },
+      { "@type": "ListItem", "position": 3, "name": facultyName, "item": `https://hamroexam.com/model-questions/${faculty}` },
     ],
   };
 
