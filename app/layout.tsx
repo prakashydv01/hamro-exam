@@ -9,9 +9,9 @@ import Script from 'next/script'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Hamro Exam - Exam Preparation Platform',
+  title: 'Hamro Exam - Entrance Exam Preparation Platform',
   description:
-    'Hamro Exam is a comprehensive exam preparation platform designed to help students excel in their academic pursuits.',
+    'Hamro Exam is a comprehensive Entrance exam preparation platform designed to help students excel in their academic pursuits.',
 }
 
 export default function RootLayout({
