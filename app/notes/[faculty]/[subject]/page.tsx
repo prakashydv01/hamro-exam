@@ -1,15 +1,12 @@
 import { contentfulClient } from "@/lib/contentful";
-import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { BLOCKS, MARKS, INLINES } from "@contentful/rich-text-types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import React from "react";
 
 import {
   MathJax,
   MathJaxContext,
 } from "better-react-mathjax";
-
-
 
 export const revalidate = 60;
 
@@ -25,122 +22,193 @@ const mathJaxConfig = {
   },
 };
 
-// Function to render LaTeX inside text
-const renderLatexText = (text: string) => {
-  if (!text) return text;
+// ---------------------------------------------------------------------------
+// JSON content schema (same shape you'd get from Rich Text, just stored as a
+// plain JSON field now):
+//
+// { nodeType: "document", content: Node[] }
+//
+// Node:
+//  - block: { nodeType: "heading-1" | "heading-2" | "heading-3" | "paragraph"
+//             | "unordered-list" | "ordered-list" | "list-item" | "hr"
+//             | "table" | "table-row" | "table-cell" | "table-header-cell",
+//             content: Node[] }
+//  - text:  { nodeType: "text", value: string, marks?: { type: string }[] }
+// ---------------------------------------------------------------------------
 
+type JsonNode = {
+  nodeType: string;
+  value?: string;
+  marks?: { type: string }[];
+  content?: JsonNode[];
+};
+
+// Wraps any plain string in MathJax so $...$ / $$...$$ inside it typesets.
+const renderLatexText = (text: string, key: React.Key) => {
+  if (!text) return null;
   return (
-    <MathJax inline dynamic>
+    <MathJax key={key} inline dynamic>
       {text}
     </MathJax>
   );
 };
 
-// Custom function to render rich text with preserved line breaks + LaTeX
-const renderRichText = (content: any) => {
+// Renders a "text" leaf node, applying bold/italic marks around the
+// MathJax-wrapped text.
+function renderTextNode(node: JsonNode, key: React.Key): React.ReactNode {
+  let rendered: React.ReactNode = renderLatexText(node.value ?? "", `${key}-t`);
+
+  const marks = node.marks ?? [];
+  if (marks.some((m) => m.type === "bold")) {
+    rendered = (
+      <strong key={`${key}-b`} className="font-bold text-gray-900">
+        {rendered}
+      </strong>
+    );
+  }
+  if (marks.some((m) => m.type === "italic")) {
+    rendered = (
+      <em key={`${key}-i`} className="italic text-gray-700">
+        {rendered}
+      </em>
+    );
+  }
+  if (marks.some((m) => m.type === "underline")) {
+    rendered = (
+      <span key={`${key}-u`} className="underline">
+        {rendered}
+      </span>
+    );
+  }
+
+  return rendered;
+}
+
+// Renders a list of child nodes, giving each a stable key.
+function renderChildren(nodes: JsonNode[] | undefined, keyPrefix: string): React.ReactNode[] {
+  if (!nodes) return [];
+  return nodes.map((child, i) => renderNode(child, `${keyPrefix}-${i}`));
+}
+
+// Core recursive renderer — the JSON-field equivalent of documentToReactComponents.
+function renderNode(node: JsonNode, key: React.Key): React.ReactNode {
+  switch (node.nodeType) {
+    case "document":
+      return <React.Fragment key={key}>{renderChildren(node.content, `${key}`)}</React.Fragment>;
+
+    case "text":
+      return renderTextNode(node, key);
+
+    case "paragraph":
+      return (
+        <div key={key} className="mb-4 leading-relaxed text-gray-600 whitespace-pre-wrap break-words">
+          {renderChildren(node.content, `${key}`)}
+        </div>
+      );
+
+    case "heading-1":
+      return (
+        <h1 key={key} className="text-3xl font-bold mt-8 mb-4 text-gray-900">
+          {renderChildren(node.content, `${key}`)}
+        </h1>
+      );
+
+    case "heading-2":
+      return (
+        <h2 key={key} className="text-2xl font-semibold mt-6 mb-3 text-gray-800">
+          {renderChildren(node.content, `${key}`)}
+        </h2>
+      );
+
+    case "heading-3":
+      return (
+        <h3 key={key} className="text-xl font-semibold mt-5 mb-2 text-gray-800">
+          {renderChildren(node.content, `${key}`)}
+        </h3>
+      );
+
+    case "unordered-list":
+      return (
+        <ul key={key} className="list-disc pl-6 mb-4 space-y-1 text-gray-600">
+          {renderChildren(node.content, `${key}`)}
+        </ul>
+      );
+
+    case "ordered-list":
+      return (
+        <ol key={key} className="list-decimal pl-6 mb-4 space-y-1 text-gray-600">
+          {renderChildren(node.content, `${key}`)}
+        </ol>
+      );
+
+    case "list-item":
+      return (
+        <li key={key} className="mb-1">
+          {renderChildren(node.content, `${key}`)}
+        </li>
+      );
+
+    case "hr":
+      return <hr key={key} className="my-6 border-gray-200" />;
+
+    case "table":
+      return (
+        <div key={key} className="mb-6 overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-200 text-sm">
+            <tbody>{renderChildren(node.content, `${key}`)}</tbody>
+          </table>
+        </div>
+      );
+
+    case "table-row":
+      return (
+        <tr key={key} className="border-b border-gray-200 even:bg-gray-50">
+          {renderChildren(node.content, `${key}`)}
+        </tr>
+      );
+
+    case "table-header-cell":
+      return (
+        <th
+          key={key}
+          className="border border-gray-200 bg-gray-800 px-3 py-2 text-left font-semibold text-white"
+        >
+          {renderChildren(node.content, `${key}`)}
+        </th>
+      );
+
+    case "table-cell":
+      return (
+        <td key={key} className="border border-gray-200 px-3 py-2 align-top">
+          {renderChildren(node.content, `${key}`)}
+        </td>
+      );
+
+    default:
+      // Unknown node type — render children defensively so nothing silently vanishes.
+      return <React.Fragment key={key}>{renderChildren(node.content, `${key}`)}</React.Fragment>;
+  }
+}
+
+// Entry point: accepts the raw JSON field value (object, or a JSON string —
+// handled defensively in case it ever comes back unparsed).
+function renderJsonContent(content: unknown): React.ReactNode {
   if (!content) return null;
 
-  const options = {
-    renderMark: {
-      [MARKS.BOLD]: (text: React.ReactNode) => (
-        <strong className="font-bold text-gray-900">
-          {text}
-        </strong>
-      ),
+  let parsed: JsonNode;
+  if (typeof content === "string") {
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      // Not valid JSON — show it as plain (MathJax-wrapped) text instead of crashing.
+      return renderLatexText(content, "raw");
+    }
+  } else {
+    parsed = content as JsonNode;
+  }
 
-      [MARKS.ITALIC]: (text: React.ReactNode) => (
-        <em className="italic text-gray-700">
-          {text}
-        </em>
-      ),
-    },
-
-    renderText: (text: string) => {
-      return renderLatexText(text);
-    },
-
-    renderNode: {
-      [BLOCKS.PARAGRAPH]: (
-        node: any,
-        children: React.ReactNode
-      ) => (
-        <div className="mb-4 leading-relaxed text-gray-600 whitespace-pre-wrap break-words">
-          {children}
-        </div>
-      ),
-
-      [BLOCKS.HEADING_1]: (
-        node: any,
-        children: React.ReactNode
-      ) => (
-        <h1 className="text-3xl font-bold mt-8 mb-4 text-gray-900">
-          {children}
-        </h1>
-      ),
-
-      [BLOCKS.HEADING_2]: (
-        node: any,
-        children: React.ReactNode
-      ) => (
-        <h2 className="text-2xl font-semibold mt-6 mb-3 text-gray-800">
-          {children}
-        </h2>
-      ),
-
-      [BLOCKS.HEADING_3]: (
-        node: any,
-        children: React.ReactNode
-      ) => (
-        <h3 className="text-xl font-semibold mt-5 mb-2 text-gray-800">
-          {children}
-        </h3>
-      ),
-
-      [BLOCKS.UL_LIST]: (
-        node: any,
-        children: React.ReactNode
-      ) => (
-        <ul className="list-disc pl-6 mb-4 space-y-1 text-gray-600">
-          {children}
-        </ul>
-      ),
-
-      [BLOCKS.OL_LIST]: (
-        node: any,
-        children: React.ReactNode
-      ) => (
-        <ol className="list-decimal pl-6 mb-4 space-y-1 text-gray-600">
-          {children}
-        </ol>
-      ),
-
-      [BLOCKS.LIST_ITEM]: (
-        node: any,
-        children: React.ReactNode
-      ) => <li className="mb-1">{children}</li>,
-
-      [INLINES.HYPERLINK]: (
-        node: any,
-        children: React.ReactNode
-      ) => {
-        const { uri } = node.data;
-
-        return (
-          <a
-            href={uri}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-emerald-600 hover:text-emerald-700 underline"
-          >
-            {children}
-          </a>
-        );
-      },
-    },
-  };
-
-  return documentToReactComponents(content, options);
-};
+  return renderNode(parsed, "root");
+}
 
 // Generate metadata for SEO
 export async function generateMetadata({
@@ -153,15 +221,11 @@ export async function generateMetadata({
 }) {
   const { faculty, subject } = await params;
 
-  const facultyName =
-    faculty.charAt(0).toUpperCase() +
-    faculty.slice(1);
+  const facultyName = faculty.charAt(0).toUpperCase() + faculty.slice(1);
 
   const subjectName = subject
     .replace(/-/g, " ")
-    .replace(/\b\w/g, (l: string) =>
-      l.toUpperCase()
-    );
+    .replace(/\b\w/g, (l: string) => l.toUpperCase());
 
   return {
     title: `${subjectName} Syllabus | ${facultyName} Entrance`,
@@ -180,20 +244,13 @@ export default async function SubjectNote({
 }) {
   const { faculty, subject } = await params;
 
-  const facultyName =
-    faculty.charAt(0).toUpperCase() +
-    faculty.slice(1);
+  const facultyName = faculty.charAt(0).toUpperCase() + faculty.slice(1);
 
-  const subjectName = subject
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (l: string) =>
-      l.toUpperCase());
+  const subjectName = subject.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase());
 
   const res = await contentfulClient.getEntries({
     content_type: "notes",
-    "fields.faculty": faculty
-      .toLowerCase()
-      .trim(),
+    "fields.faculty": faculty.toLowerCase().trim(),
     "fields.subject": subjectName,
     limit: 1,
   });
@@ -205,7 +262,7 @@ export default async function SubjectNote({
   }
 
   const title = note.fields.title as string;
-  const content = note.fields.content;
+  const content = note.fields.content; // now a plain JSON field
   const updatedAt = note.sys.updatedAt;
 
   return (
@@ -219,12 +276,7 @@ export default async function SubjectNote({
                 href={`/notes/${faculty}`}
                 className="inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-700"
               >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -232,7 +284,6 @@ export default async function SubjectNote({
                     d="M10 19l-7-7m0 0l7-7m-7 7h18"
                   />
                 </svg>
-
                 Back to Subjects
               </Link>
 
@@ -266,13 +317,7 @@ export default async function SubjectNote({
               {updatedAt && (
                 <>
                   <span>•</span>
-
-                  <span>
-                    Updated:{" "}
-                    {new Date(
-                      updatedAt
-                    ).toLocaleDateString()}
-                  </span>
+                  <span>Updated: {new Date(updatedAt).toLocaleDateString()}</span>
                 </>
               )}
             </div>
@@ -346,11 +391,9 @@ export default async function SubjectNote({
               `}</style>
 
               {content ? (
-                renderRichText(content)
+                renderJsonContent(content)
               ) : (
-                <p className="text-gray-500">
-                  No content available.
-                </p>
+                <p className="text-gray-500">No content available.</p>
               )}
             </div>
           </div>
@@ -361,12 +404,7 @@ export default async function SubjectNote({
               href={`/notes/${faculty}`}
               className="inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-700"
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -374,7 +412,6 @@ export default async function SubjectNote({
                   d="M10 19l-7-7m0 0l7-7m-7 7h18"
                 />
               </svg>
-
               All {facultyName} Subjects
             </Link>
           </div>
