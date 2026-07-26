@@ -28,11 +28,11 @@ interface UserData {
 /* ================= NAV ITEMS ================= */
 const navItems = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/mocktest", label: "Mock Test", icon: BookOpen },
-  { href: "/practice", label: "Practice", icon: Book },
-  { href: "/notes", label: "Notes", icon: BookMarked },
-  { href: "/syllabus", label: "Syllabus", icon: ListChecks },
-  { href: "/model-questions", label: "Model Questions", icon: BarChart2 },
+  { href: "/dashboard/mocktest", label: "Mock Test", icon: BookOpen },
+  { href: "/dashboard/practice", label: "Practice", icon: Book },
+  { href: "/dashboard/notes", label: "Notes", icon: BookMarked },
+  { href: "/dashboard/syllabus", label: "Syllabus", icon: ListChecks },
+  { href: "/dashboard/model-questions", label: "Model Questions", icon: BarChart2 },
 ];
 
 /* ================= HEADER ================= */

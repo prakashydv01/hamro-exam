@@ -95,9 +95,9 @@ const Footer = () => {
             <ul className="space-y-3">
               {[
                
-                { href: '/mocktest', label: 'Mock Tests', icon: <FaBookOpen className="inline mr-2" /> },
+                { href: '/dashboard/mocktest', label: 'Mock Tests', icon: <FaBookOpen className="inline mr-2" /> },
                 
-                { href: '/practice', label: 'Practice', icon: <FaUserGraduate className="inline mr-2" /> },
+                { href: '/dashboard/practice', label: 'Practice', icon: <FaUserGraduate className="inline mr-2" /> },
                 { href: '/notes', label: 'Notes', icon: <FaBook className="inline mr-2" /> },
                 { href: '/syllabus', label: 'Syllabus', icon: <FaBookReader className="inline mr-2" /> },
                 { href: '/model-questions', label: 'Model Questions', icon: <FaBookDead className="inline mr-2" /> },

@@ -38,8 +38,8 @@ const FacultyCard: React.FC<FacultyCardProps> = ({
 }) => {
   const router = useRouter();
 
-  const handlePractice = () => router.push('/practice');
-  const handleMockTest = () => router.push('/mocktest');
+  const handlePractice = () => router.push('/dashboard/practice');
+  const handleMockTest = () => router.push('/dashboard/mocktest');
 
   return (
     <div

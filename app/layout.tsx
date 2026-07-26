@@ -25,7 +25,7 @@ export default function RootLayout({
         <Providers>
           <Header />
 
-          {/* ✅ Google AdSense Script (CORRECT WAY) */}
+          {/* ✅ Google AdSense Script  */}
           <Script
             id="adsense-script"
             async
