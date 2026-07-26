@@ -15,6 +15,8 @@ import {
   BookMarked,
   LogOut,
   ChevronRight,
+  ChevronDown,
+  LayoutDashboard,
 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 
@@ -30,9 +32,9 @@ const navItems = [
   { href: "/", label: "Home", icon: Home },
   { href: "/dashboard/mocktest", label: "Mock Test", icon: BookOpen },
   { href: "/dashboard/practice", label: "Practice", icon: Book },
-  { href: "/dashboard/notes", label: "Notes", icon: BookMarked },
-  { href: "/dashboard/syllabus", label: "Syllabus", icon: ListChecks },
-  { href: "/dashboard/model-questions", label: "Model Questions", icon: BarChart2 },
+  { href: "/notes", label: "Notes", icon: BookMarked },
+  { href: "/syllabus", label: "Syllabus", icon: ListChecks },
+  { href: "/model-questions", label: "Model Questions", icon: BarChart2 },
 ];
 
 /* ================= HEADER ================= */
@@ -42,12 +44,15 @@ export default function Header() {
   const isAuthLoading = status === "loading";
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const profileBtnRef = useRef<HTMLButtonElement>(null);
 
   /* ── Scroll shadow ── */
   useEffect(() => {
@@ -56,7 +61,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /* ── Click outside to close ── */
+  /* ── Click outside to close (mobile menu + profile dropdown) ── */
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -66,14 +71,23 @@ export default function Header() {
       ) {
         setIsMenuOpen(false);
       }
+
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(e.target as Node) &&
+        !profileBtnRef.current?.contains(e.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  /* ── Close menu on route change ── */
+  /* ── Close menus on route change ── */
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsProfileOpen(false);
   }, [pathname]);
 
   /* ── Body scroll lock on mobile menu ── */
@@ -87,6 +101,7 @@ export default function Header() {
   /* ── Logout ── */
   const handleLogout = async () => {
     setIsMenuOpen(false);
+    setIsProfileOpen(false);
     await signOut({ redirect: false });
     router.push("/");
   };
@@ -153,17 +168,109 @@ export default function Header() {
               ))}
             </nav>
 
-            {/* ── Right: auth + hamburger ── */}
+            {/* ── Right: dashboard + profile/auth + hamburger ── */}
             <div className="flex items-center gap-2 shrink-0">
-              {/* Desktop logout — only when logged in */}
               {!isAuthLoading && user && (
-                <button
-                  onClick={handleLogout}
-                  className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-red-500 hover:bg-red-50 transition-colors"
+                <>
+                  {/* Dashboard button — desktop only */}
+                  <Link
+                    href="/dashboard"
+                    className={`
+                      hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium
+                      transition-colors
+                      ${
+                        isActive("/dashboard")
+                          ? "bg-blue-50 text-blue-600"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      }
+                    `}
+                  >
+                    <LayoutDashboard size={15} />
+                    Dashboard
+                  </Link>
+
+                  {/* Profile dropdown — desktop only */}
+                  <div className="hidden lg:block relative">
+                    <button
+                      ref={profileBtnRef}
+                      onClick={() => setIsProfileOpen((v) => !v)}
+                      className="flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-full hover:bg-gray-50 transition-colors"
+                      aria-label="Account menu"
+                      aria-expanded={isProfileOpen}
+                    >
+                      {user.image ? (
+                        <Image
+                          src={user.image}
+                          alt={user.name ?? "User"}
+                          width={30}
+                          height={30}
+                          className="rounded-full ring-1 ring-gray-200"
+                        />
+                      ) : (
+                        <div className="w-[30px] h-[30px] rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">
+                          {user.name?.[0]?.toUpperCase() ?? "U"}
+                        </div>
+                      )}
+                      <ChevronDown
+                        size={14}
+                        className={`text-gray-400 transition-transform duration-150 ${
+                          isProfileOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {/* Dropdown panel */}
+                    <div
+                      ref={profileRef}
+                      className={`
+                        absolute right-0 top-[calc(100%+8px)] w-56
+                        bg-white rounded-xl shadow-lg ring-1 ring-gray-100
+                        py-1.5 origin-top-right
+                        transition-all duration-150
+                        ${
+                          isProfileOpen
+                            ? "opacity-100 scale-100 pointer-events-auto"
+                            : "opacity-0 scale-95 pointer-events-none"
+                        }
+                      `}
+                    >
+                      <div className="px-3.5 py-2.5 border-b border-gray-100">
+                        <p className="text-sm font-semibold text-gray-900 truncate">
+                          {user.name ?? "User"}
+                        </p>
+                        <p className="text-xs text-gray-400 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <LayoutDashboard size={15} className="text-gray-400" />
+                        Dashboard
+                      </Link>
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut size={15} />
+                        Sign out
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {!isAuthLoading && !user && (
+                <Link
+                  href="/login"
+                  className="hidden lg:flex items-center px-3.5 py-1.5 rounded-lg text-[13px] font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
                 >
-                  <LogOut size={15} />
-                  Logout
-                </button>
+                  Sign in
+                </Link>
               )}
 
               {/* Mobile hamburger */}
@@ -264,6 +371,25 @@ export default function Header() {
                   <p className="text-xs text-gray-400 truncate">{user.email}</p>
                 </div>
               </div>
+
+              <Link
+                href="/dashboard"
+                onClick={() => setIsMenuOpen(false)}
+                className={`
+                  flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium mb-1
+                  transition-colors
+                  ${
+                    isActive("/dashboard")
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }
+                `}
+              >
+                <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-blue-50 text-blue-500">
+                  <LayoutDashboard size={15} />
+                </span>
+                Dashboard
+              </Link>
 
               <button
                 onClick={handleLogout}
