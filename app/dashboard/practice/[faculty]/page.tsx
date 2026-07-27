@@ -56,7 +56,7 @@ export default function SubjectPage() {
   /* ---------------- HANDLE CLICK ---------------- */
   const handleSubjectClick = (subject: string) => {
     router.push(
-      `/practice/${encodeURIComponent(faculty)}/${encodeURIComponent(subject)}`
+      `/dashboard/practice/${encodeURIComponent(faculty)}/${encodeURIComponent(subject)}`
     );
   };
 

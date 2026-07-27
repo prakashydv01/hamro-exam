@@ -40,7 +40,7 @@ export default function PracticePage() {
   }, []);
 
   const handleFacultySelect = (faculty: string) => {
-    router.push(`/practice/${encodeURIComponent(faculty)}`);
+    router.push(`/dashboard/practice/${encodeURIComponent(faculty)}`);
   };
 
   // Faculty icons mapping (you can expand this)
