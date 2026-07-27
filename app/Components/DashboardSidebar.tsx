@@ -18,11 +18,11 @@ import {
 } from "lucide-react";
 
 const menu = [
-  { href: "/overview", label: "Overview", icon: Home },
-  { href: "/practice", label: "Practice", icon: BookOpen },
-  { href: "/mocktest", label: "Mock Tests", icon: FileText },
+  { href: "/dashboard/overview", label: "Overview", icon: Home },
+  { href: "/dashboard/practice", label: "Practice", icon: BookOpen },
+  { href: "/dashboard/mocktest", label: "Mock Tests", icon: FileText },
   
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 interface DashboardSidebarProps {

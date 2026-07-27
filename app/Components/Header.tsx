@@ -194,26 +194,16 @@ export default function Header() {
                     <button
                       ref={profileBtnRef}
                       onClick={() => setIsProfileOpen((v) => !v)}
-                      className="flex items-center gap-1.5 pl-1 pr-2 py-1 rounded-full hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-1 pl-2.5 pr-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors max-w-[160px]"
                       aria-label="Account menu"
                       aria-expanded={isProfileOpen}
                     >
-                      {user.image ? (
-                        <Image
-                          src={user.image}
-                          alt={user.name ?? "User"}
-                          width={30}
-                          height={30}
-                          className="rounded-full ring-1 ring-gray-200"
-                        />
-                      ) : (
-                        <div className="w-[30px] h-[30px] rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">
-                          {user.name?.[0]?.toUpperCase() ?? "U"}
-                        </div>
-                      )}
+                      <span className="text-[13px] font-medium text-gray-700 truncate">
+                        {user.name ?? "User"}
+                      </span>
                       <ChevronDown
                         size={14}
-                        className={`text-gray-400 transition-transform duration-150 ${
+                        className={`shrink-0 text-gray-400 transition-transform duration-150 ${
                           isProfileOpen ? "rotate-180" : ""
                         }`}
                       />
@@ -350,26 +340,11 @@ export default function Header() {
           {/* Divider + Auth */}
           {!isAuthLoading && user && (
             <div className="px-3 pb-4 pt-1 border-t border-gray-100 mt-1">
-              <div className="flex items-center gap-3 px-3 py-2.5 mb-1">
-                {user.image ? (
-                  <Image
-                    src={user.image}
-                    alt={user.name ?? "User"}
-                    width={32}
-                    height={32}
-                    className="rounded-full ring-2 ring-gray-100"
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold">
-                    {user.name?.[0]?.toUpperCase() ?? "U"}
-                  </div>
-                )}
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">
-                    {user.name ?? "User"}
-                  </p>
-                  <p className="text-xs text-gray-400 truncate">{user.email}</p>
-                </div>
+              <div className="px-3 py-2.5 mb-1">
+                <p className="text-sm font-semibold text-gray-900 truncate">
+                  {user.name ?? "User"}
+                </p>
+                <p className="text-xs text-gray-400 truncate">{user.email}</p>
               </div>
 
               <Link

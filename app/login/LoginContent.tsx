@@ -76,38 +76,35 @@ export default function LoginContent() {
 
   // Simple logo component (replace with your own image if needed)
   const Logo = () => (
-  <div className="w-10 h-10 flex items-center justify-center">
-    <img 
-      src="/image/Hamro-Exams.svg" 
-      alt="Logo" 
-      className="w-full h-full object-contain"
-    />
-  </div>
-);
-
+    <div className="w-10 h-10 flex items-center justify-center">
+      <img
+        src="/image/Hamro-Exams.svg"
+        alt="Logo"
+        className="w-full h-full object-contain"
+      />
+    </div>
+  );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 p-4 transition-colors">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
       {/* Login Card */}
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8 transition-colors">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 sm:p-8">
         {/* Logo */}
         <Logo />
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
             Welcome back
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Sign in to your account
-          </p>
+          <p className="text-gray-600 mt-2">Sign in to your account</p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-3">
+          <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
             <AlertCircle className="text-red-500 flex-shrink-0" size={18} />
-            <p className="text-red-700 dark:text-red-300 text-sm">{error}</p>
+            <p className="text-red-700 text-sm">{error}</p>
           </div>
         )}
 
@@ -115,17 +112,17 @@ export default function LoginContent() {
         <form onSubmit={handleLogin} className="space-y-5">
           {/* Email Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Email address
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail size={18} className="text-gray-400 dark:text-gray-500" />
+                <Mail size={18} className="text-gray-400" />
               </div>
               <input
                 type="email"
                 placeholder="you@example.com"
-                className="w-full pl-10 pr-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400"
+                className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white text-gray-900 placeholder-gray-400"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -136,24 +133,24 @@ export default function LoginContent() {
           {/* Password Field */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <Link
                 href="/forget-password"
-                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
               >
                 Forgot password?
               </Link>
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock size={18} className="text-gray-400 dark:text-gray-500" />
+                <Lock size={18} className="text-gray-400" />
               </div>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400"
+                className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none bg-white text-gray-900 placeholder-gray-400"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -161,7 +158,7 @@ export default function LoginContent() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -187,34 +184,34 @@ export default function LoginContent() {
 
         {/* Divider */}
         <div className="my-6 flex items-center">
-          <div className="flex-1 border-t border-gray-200 dark:border-gray-700"></div>
-          <span className="px-4 text-gray-400 dark:text-gray-500 text-xs">OR</span>
-          <div className="flex-1 border-t border-gray-200 dark:border-gray-700"></div>
+          <div className="flex-1 border-t border-gray-200"></div>
+          <span className="px-4 text-gray-400 text-xs">OR</span>
+          <div className="flex-1 border-t border-gray-200"></div>
         </div>
 
         {/* Google Sign In */}
         <button
           onClick={handleGoogleLogin}
           disabled={googleLoading}
-          className="w-full py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+          className="w-full py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
         >
           {googleLoading ? (
             <Loader2 size={18} className="animate-spin" />
           ) : (
             <GoogleIcon />
           )}
-          <span className="font-medium text-gray-700 dark:text-gray-200 text-sm">
+          <span className="font-medium text-gray-700 text-sm">
             {googleLoading ? "Connecting..." : "Sign in with Google"}
           </span>
         </button>
 
         {/* Sign Up Link */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600">
             Don't have an account?{" "}
             <Link
               href="/signup"
-              className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+              className="font-medium text-blue-600 hover:text-blue-800 transition-colors"
             >
               Create account
             </Link>
