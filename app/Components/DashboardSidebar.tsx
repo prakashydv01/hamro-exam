@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 const menu = [
-  { href: "/overview", label: "Overview", icon: Home },
+  { href: "/dashboard", label: "Overview", icon: Home },
   { href: "/dashboard/practice", label: "Practice", icon: BookOpen },
   { href: "/dashboard/mocktest", label: "Mock Tests", icon: FileText },
   
