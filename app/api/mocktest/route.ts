@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 import MockTestConfig from "@/models/MockTestConfig";
 import Question from "@/models/question";
 import MockTestAttempt from "@/models/Attempt";
 
 /* ================= GET: AVAILABLE MOCK TESTS ================= */
+// No user data involved here, left public.
 export async function GET() {
   try {
     await connectDB();
@@ -23,15 +26,17 @@ export async function GET() {
 /* ================= POST: START MOCK TEST ================= */
 export async function POST(req: Request) {
   try {
-    // Session check removed - now public
-    const { faculty, selectedGroups, userId: clientUserId } = await req.json();
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session.user.id;
+
+    const { faculty, selectedGroups } = await req.json();
 
     if (!faculty) {
       return NextResponse.json({ error: "Faculty required" }, { status: 400 });
     }
-
-    // Generate a guest user ID if not provided
-    const userId = clientUserId || `guest_${crypto.randomUUID()}`;
 
     await connectDB();
 
@@ -98,12 +103,12 @@ export async function POST(req: Request) {
     };
 
     const attempt = await MockTestAttempt.create({
-      userId: userId,
+      userId,
       faculty,
       negativeMarking: negativeMarkingConfig,
       questions: questions.map((q) => ({
         questionId: q._id,
-        correctAnswer: Number(q.correctAnswer), // ensure number
+        correctAnswer: Number(q.correctAnswer),
       })),
       answers: {},
       startedAt: new Date(),
@@ -119,11 +124,10 @@ export async function POST(req: Request) {
         _id: q._id,
         question: q.question,
         options: q.options,
-        correctAnswer: Number(q.correctAnswer), // 👈 CRITICAL: Send correctAnswer!
-        subject: q.subject, // 👈 Also send subject for subject-wise analysis
+        correctAnswer: Number(q.correctAnswer),
+        subject: q.subject,
       })),
       negativeMarking: negativeMarkingConfig,
-      userId: userId, // Return userId to client for subsequent requests
     });
   } catch (error) {
     console.error("Error starting mock test:", error);
@@ -137,8 +141,13 @@ export async function POST(req: Request) {
 /* ================= PUT: SAVE ANSWERS ================= */
 export async function PUT(req: Request) {
   try {
-    // Session check removed - now requires userId from request body
-    const { attemptId, answers, userId } = await req.json();
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session.user.id;
+
+    const { attemptId, answers } = await req.json();
 
     if (!attemptId || !answers) {
       return NextResponse.json(
@@ -147,18 +156,11 @@ export async function PUT(req: Request) {
       );
     }
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: "User ID is required to save answers" },
-        { status: 400 }
-      );
-    }
-
     await connectDB();
 
     const attempt = await MockTestAttempt.findOne({
       _id: attemptId,
-      userId: userId,
+      userId, // scoped to the logged-in user — can't touch someone else's attempt
     });
 
     if (!attempt) {
@@ -187,8 +189,13 @@ export async function PUT(req: Request) {
 /* ================= PATCH: COMPLETE TEST ================= */
 export async function PATCH(req: Request) {
   try {
-    // Session check removed - now requires userId from request body
-    const { attemptId, userId } = await req.json();
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session.user.id;
+
+    const { attemptId } = await req.json();
 
     if (!attemptId) {
       return NextResponse.json(
@@ -197,18 +204,11 @@ export async function PATCH(req: Request) {
       );
     }
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: "User ID is required to complete test" },
-        { status: 400 }
-      );
-    }
-
     await connectDB();
 
     const attempt = await MockTestAttempt.findOne({
       _id: attemptId,
-      userId: userId,
+      userId,
     });
 
     if (!attempt) {
@@ -248,86 +248,6 @@ export async function PATCH(req: Request) {
     console.error("Error completing test:", error);
     return NextResponse.json(
       { error: "Failed to complete test" },
-      { status: 500 }
-    );
-  }
-}
-
-/* ================= GET: TEST RESULTS ================= */
-export async function GET_RESULTS(req: Request) {
-  try {
-    // Session check removed - now requires userId from query params
-    const { searchParams } = new URL(req.url);
-    const attemptId = searchParams.get("attemptId");
-    const userId = searchParams.get("userId");
-
-    if (!attemptId) {
-      return NextResponse.json(
-        { error: "Attempt ID is required" },
-        { status: 400 }
-      );
-    }
-
-    if (!userId) {
-      return NextResponse.json(
-        { error: "User ID is required to fetch results" },
-        { status: 400 }
-      );
-    }
-
-    await connectDB();
-
-    const attempt = await MockTestAttempt.findOne({
-      _id: attemptId,
-      userId: userId,
-    }).populate("questions.questionId", "question options correctAnswer");
-
-    if (!attempt) {
-      return NextResponse.json(
-        { error: "Attempt not found" },
-        { status: 404 }
-      );
-    }
-
-    const questionDetails = attempt.questions.map((q: any, index: number) => {
-      const qId = q.questionId._id.toString();
-      const userAnswer = attempt.answers[qId];
-
-      const isCorrect =
-        userAnswer !== undefined &&
-        Number(userAnswer) === Number(q.correctAnswer);
-
-      return {
-        questionNumber: index + 1,
-        question: q.questionId?.question,
-        userAnswer:
-          userAnswer !== undefined ? userAnswer : "Not attempted",
-        correctAnswer: q.correctAnswer,
-        isCorrect,
-        isAttempted: userAnswer !== undefined,
-        options: q.questionId?.options,
-      };
-    });
-
-    return NextResponse.json({
-      attemptId: attempt._id,
-      faculty: attempt.faculty,
-      startedAt: attempt.startedAt,
-      completedAt: attempt.completedAt,
-      status: attempt.status,
-      results: {
-        totalScore: attempt.score,
-        correct: attempt.correctCount,
-        wrong: attempt.wrongCount,
-        unattempted: attempt.unattemptedCount,
-        negativeMarking: attempt.negativeMarking,
-      },
-      questions: questionDetails,
-    });
-  } catch (error) {
-    console.error("Error fetching results:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch results" },
       { status: 500 }
     );
   }
